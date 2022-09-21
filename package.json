@@ -9,6 +9,9 @@
   "files": [
     "dist/"
   ],
+  "scripts": {
+    "prepublishOnly": "rm -rf dist/ && tsc"
+  },
   "devDependencies": {
     "@types/react": "^18.0.20",
     "prettier": "^2.7.1",

@@ -1,8 +1,12 @@
-export interface ValueNotifier<A> {
+export interface ValueListenable<A> {
   readonly value: A;
+  select<B>(f: (value: A) => B): ValueListenable<B>;
+  subscribe(handler: (value: A) => void): () => void;
+}
+
+export interface ValueNotifier<A> extends ValueListenable<A> {
   set(value: A): ValueNotifier<A>;
   update(f: (value: A) => A): ValueNotifier<A>;
-  subscribe(handler: (value: A) => void): () => void;
 }
 
 export interface ValueNotifierOpts<A> {
@@ -55,8 +59,23 @@ export function valueNotifier<A>(
     },
     set,
     update,
+    select: (f) => select(notifier, f),
     subscribe,
   };
 
   return notifier;
+}
+
+function select<A, B>(parent: ValueListenable<A>, f: (value: A) => B) {
+  const child: ValueListenable<B> = {
+    get value() {
+      return f(parent.value);
+    },
+    subscribe(handler) {
+      return parent.subscribe((value) => handler(f(value)));
+    },
+    select: (f) => select(child, f),
+  };
+
+  return child;
 }

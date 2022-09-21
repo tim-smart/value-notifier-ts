@@ -4,7 +4,7 @@
   "description": "A simple primitive for listening to changes to a value",
   "main": "dist/mod.js",
   "repository": "https://github.com/tim-smart/value-notifier-ts.git",
-  "author": "Tim Smart <tim.smart@arisechurch.com>",
+  "author": "Tim Smart <hello@timsmart.co>",
   "license": "MIT",
   "files": [
     "dist/"

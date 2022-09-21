@@ -6,6 +6,9 @@
   "repository": "https://github.com/tim-smart/value-notifier-ts.git",
   "author": "Tim Smart <tim.smart@arisechurch.com>",
   "license": "MIT",
+  "files": [
+    "dist/"
+  ],
   "devDependencies": {
     "@types/react": "^18.0.20",
     "prettier": "^2.7.1",

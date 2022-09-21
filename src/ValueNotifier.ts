@@ -1,7 +1,10 @@
 export interface ValueListenable<A> {
   readonly key: string;
   readonly value: A;
-  select<B>(f: (value: A) => B): ValueListenable<B>;
+  select<B>(
+    f: (value: A) => B,
+    opts?: ValueNotifierOpts<B>
+  ): ValueListenable<B>;
   subscribe(handler: (value: A) => void): () => void;
 }
 
@@ -66,23 +69,37 @@ export function valueNotifier<A>(
     },
     set,
     update,
-    select: (f) => select(notifier, f),
+    select: (f, opts) => select(notifier, f, opts),
     subscribe,
   };
 
   return notifier;
 }
 
-function select<A, B>(parent: ValueListenable<A>, f: (value: A) => B) {
+function select<A, B>(
+  parent: ValueListenable<A>,
+  f: (value: A) => B,
+  { equals = Object.is }: ValueNotifierOpts<B> = {}
+) {
   const child: ValueListenable<B> = {
     key: createKey(),
     get value() {
       return f(parent.value);
     },
     subscribe(handler) {
-      return parent.subscribe((value) => handler(f(value)));
+      let value = f(parent.value);
+
+      return parent.subscribe((parentValue) => {
+        const newValue = f(parentValue);
+        if (equals(value, newValue)) {
+          return;
+        }
+
+        value = newValue;
+        handler(value);
+      });
     },
-    select: (f) => select(child, f),
+    select: (f, opts) => select(child, f, opts),
   };
 
   return child;

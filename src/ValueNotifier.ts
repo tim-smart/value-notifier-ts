@@ -1,4 +1,5 @@
 export interface ValueListenable<A> {
+  readonly key: string;
   readonly value: A;
   select<B>(f: (value: A) => B): ValueListenable<B>;
   subscribe(handler: (value: A) => void): () => void;
@@ -11,6 +12,11 @@ export interface ValueNotifier<A> extends ValueListenable<A> {
 
 export interface ValueNotifierOpts<A> {
   equals?: (a: A, b: A) => boolean;
+}
+
+let globalKeyCounter = 0;
+function createKey() {
+  return `valueListenable${globalKeyCounter++}`;
 }
 
 export function valueNotifier<A>(
@@ -54,6 +60,7 @@ export function valueNotifier<A>(
   }
 
   notifier = {
+    key: createKey(),
     get value() {
       return value;
     },
@@ -68,6 +75,7 @@ export function valueNotifier<A>(
 
 function select<A, B>(parent: ValueListenable<A>, f: (value: A) => B) {
   const child: ValueListenable<B> = {
+    key: createKey(),
     get value() {
       return f(parent.value);
     },

@@ -1,3 +1,6 @@
+import { subscribable } from "./subscribable";
+import { createKey, select } from "./utils";
+
 export interface ValueListenable<A> {
   readonly key: string;
   readonly value: A;
@@ -17,49 +20,26 @@ export interface ValueNotifierOpts<A> {
   equals?: (a: A, b: A) => boolean;
 }
 
-let globalKeyCounter = 0;
-function createKey() {
-  return `valueListenable${globalKeyCounter++}`;
-}
-
 export function valueNotifier<A>(
   initialValue: A,
   { equals = Object.is }: ValueNotifierOpts<A> = {}
 ): ValueNotifier<A> {
   let value = initialValue;
-
-  const listeners: Array<(a: A) => void> = [];
-  let listenerCount = 0;
   let notifier: ValueNotifier<A>;
+  const sub = subscribable<A>();
 
   function set(a: A) {
     if (equals(a, value)) return notifier;
 
     value = a;
-    notifyListeners();
+    sub.notifyListeners(value);
     return notifier;
   }
 
   function update(f: (a: A) => A) {
     value = f(value);
-    notifyListeners();
+    sub.notifyListeners(value);
     return notifier;
-  }
-
-  function subscribe(handler: (a: A) => void): () => void {
-    listeners.push(handler);
-    listenerCount++;
-
-    return () => {
-      listeners.splice(listeners.indexOf(handler), 1);
-      listenerCount--;
-    };
-  }
-
-  function notifyListeners() {
-    for (let index = 0; index < listenerCount; index++) {
-      listeners[index](value);
-    }
   }
 
   notifier = {
@@ -70,37 +50,8 @@ export function valueNotifier<A>(
     set,
     update,
     select: (f, opts) => select(notifier, f, opts),
-    subscribe,
+    subscribe: sub.subscribe,
   };
 
   return notifier;
-}
-
-function select<A, B>(
-  parent: ValueListenable<A>,
-  f: (value: A) => B,
-  { equals = Object.is }: ValueNotifierOpts<B> = {}
-) {
-  const child: ValueListenable<B> = {
-    key: createKey(),
-    get value() {
-      return f(parent.value);
-    },
-    subscribe(handler) {
-      let value = f(parent.value);
-
-      return parent.subscribe((parentValue) => {
-        const newValue = f(parentValue);
-        if (equals(value, newValue)) {
-          return;
-        }
-
-        value = newValue;
-        handler(value);
-      });
-    },
-    select: (f, opts) => select(child, f, opts),
-  };
-
-  return child;
 }

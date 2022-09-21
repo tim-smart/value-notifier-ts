@@ -1,6 +1,11 @@
 import { Subscribable, subscribable } from "./subscribable";
 import { createKey, select } from "./utils";
-import { ValueListenable, valueNotifier, ValueNotifier } from "./ValueNotifier";
+import {
+  ValueListenable,
+  valueNotifier,
+  ValueNotifier,
+  ValueNotifierOpts,
+} from "./valueNotifier";
 
 export interface ValueNotifierCollection<A>
   extends ValueListenable<ValueNotifier<A>[]> {
@@ -10,9 +15,10 @@ export interface ValueNotifierCollection<A>
 }
 
 export function valueNotifierCollection<A>(
-  items: A[]
+  items: A[],
+  opts?: ValueNotifierOpts<A>
 ): ValueNotifierCollection<A> {
-  const notifiers = items.map((item) => valueNotifier(item));
+  const notifiers = items.map((item) => valueNotifier(item, opts));
 
   const sub: Subscribable<ValueNotifier<A>[]> = subscribable(
     () => {
@@ -46,9 +52,9 @@ export function valueNotifierCollection<A>(
       const n = valueNotifier(item);
       notifiers.push(n);
 
-      if (sub) {
+      if (unsubscribes) {
         const unsubscribe = n.subscribe(onChange);
-        unsubscribes!.push(unsubscribe);
+        unsubscribes.push(unsubscribe);
         sub.notifyListeners(notifiers);
       }
 
@@ -58,9 +64,9 @@ export function valueNotifierCollection<A>(
       const n = valueNotifier(item);
       notifiers.splice(index, 0, n);
 
-      if (sub) {
+      if (unsubscribes) {
         const unsubscribe = n.subscribe(onChange);
-        unsubscribes!.splice(index, 0, unsubscribe);
+        unsubscribes.splice(index, 0, unsubscribe);
         sub.notifyListeners(notifiers);
       }
 
@@ -68,11 +74,15 @@ export function valueNotifierCollection<A>(
     },
     remove(n) {
       const index = notifiers.indexOf(n);
+      if (index === -1) {
+        return notifier;
+      }
+
       notifiers.splice(index, 1);
 
-      if (sub) {
-        unsubscribes![index]();
-        unsubscribes!.splice(index, 1);
+      if (unsubscribes) {
+        unsubscribes[index]();
+        unsubscribes.splice(index, 1);
         sub.notifyListeners(notifiers);
       }
 

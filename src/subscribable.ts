@@ -7,7 +7,7 @@ export interface Subscribable<A> {
   notifyListeners(value: A): void;
 }
 
-export function subscribable<A, Acc>(
+export function subscribable<A, Acc = never>(
   setup?: () => Acc,
   teardown?: (acc: Acc) => void
 ): Subscribable<A> {

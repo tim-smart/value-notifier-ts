@@ -1,4 +1,4 @@
-import { ValueListenable, ValueNotifierOpts } from "./ValueNotifier";
+import { ValueListenable, ValueNotifierOpts } from "./valueNotifier";
 
 let globalKeyCounter = 0;
 export function createKey() {

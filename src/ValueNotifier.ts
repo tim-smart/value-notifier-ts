@@ -48,10 +48,10 @@ export function valueNotifier<A>(
 
   function subscribe(handler: (a: A) => void): () => void {
     listeners.push(handler);
-    const index = listenerCount++;
+    listenerCount++;
 
     return () => {
-      listeners.splice(index, 1);
+      listeners.splice(listeners.indexOf(handler), 1);
       listenerCount--;
     };
   }

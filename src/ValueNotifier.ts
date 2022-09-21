@@ -11,7 +11,7 @@ export interface ValueNotifierOpts<A> {
 
 export function valueNotifier<A>(
   initialValue: A,
-  { equals = Object.is }: ValueNotifierOpts<A>
+  { equals = Object.is }: ValueNotifierOpts<A> = {}
 ): ValueNotifier<A> {
   let value = initialValue;
 

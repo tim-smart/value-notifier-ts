@@ -9,6 +9,14 @@
   "files": [
     "dist/"
   ],
+  "exports": {
+    ".": {
+      "require": "./dist/mod.js"
+    },
+    "./react": {
+      "require": "./dist/react.js"
+    }
+  },
   "scripts": {
     "prepublishOnly": "rm -rf dist/ && tsc"
   },

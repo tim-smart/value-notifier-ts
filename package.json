@@ -7,7 +7,10 @@
   "author": "Tim Smart <hello@timsmart.co>",
   "license": "MIT",
   "files": [
-    "dist/"
+    "**/*.ts",
+    "**/*.d.ts",
+    "**/*.js",
+    "**/*.js.map"
   ],
   "exports": {
     ".": "./index.js",

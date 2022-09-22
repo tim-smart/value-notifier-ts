@@ -37,9 +37,7 @@ export function valueNotifier<A>(
   }
 
   function update(f: (a: A) => A) {
-    value = f(value);
-    sub.notifyListeners(value);
-    return notifier;
+    return set(f(value));
   }
 
   notifier = {

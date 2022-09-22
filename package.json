@@ -1,6 +1,6 @@
 {
   "name": "value-notifier-ts",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "description": "A simple primitive for listening to changes to a value",
   "main": "./index.js",
   "repository": "https://github.com/tim-smart/value-notifier-ts.git",

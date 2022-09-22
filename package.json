@@ -2,7 +2,7 @@
   "name": "value-notifier-ts",
   "version": "0.1.10",
   "description": "A simple primitive for listening to changes to a value",
-  "main": "dist/mod.js",
+  "main": "./index.js",
   "repository": "https://github.com/tim-smart/value-notifier-ts.git",
   "author": "Tim Smart <hello@timsmart.co>",
   "license": "MIT",
@@ -10,15 +10,12 @@
     "dist/"
   ],
   "exports": {
-    ".": {
-      "require": "./dist/mod.js"
-    },
-    "./react": {
-      "require": "./dist/react.js"
-    }
+    ".": "./index.js",
+    "./react": "./react.js"
   },
   "scripts": {
-    "prepublishOnly": "rm -rf dist/ && tsc"
+    "clean": "git clean -fxd -e node_modules -- '*.js' '*.d.ts' '*.js.map'",
+    "prepublishOnly": "yarn clean && tsc"
   },
   "devDependencies": {
     "@types/react": "^18.0.20",

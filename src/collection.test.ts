@@ -1,5 +1,5 @@
 import { describe, test, expect } from "@jest/globals";
-import { valueNotifierCollection } from "./mod";
+import { valueNotifierCollection } from "./";
 
 describe("valueNotifierCollection", () => {
   test("listens to children", () => {

@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
-    "outDir": "./dist",
+    "outDir": "./",
     "target": "es6",
     "module": "commonjs",
     "strict": true,
     "esModuleInterop": true,
-    "inlineSourceMap": true,
     "declaration": true
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules/**/*"]
 }

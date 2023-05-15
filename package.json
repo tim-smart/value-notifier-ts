@@ -14,7 +14,8 @@
   ],
   "exports": {
     ".": "./index.js",
-    "./react": "./react.js"
+    "./react": "./react.js",
+    "./*": "./*.js"
   },
   "scripts": {
     "clean": "git clean -fxd -e node_modules -- '*.js' '*.d.ts' '*.js.map'",
